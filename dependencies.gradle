@@ -1,0 +1,5 @@
+dependencies {
+    deobfCompile "mcp.mobius.waila:Hwyla:1.8.9-B22_1.11"
+    deobfCompile "mcjty.theoneprobe:TheOneProbe:1.11-1.3.3-46"
+    deobfCompile "net.blay09.mods:Waystones_1.11.2:3.0.11"
+}

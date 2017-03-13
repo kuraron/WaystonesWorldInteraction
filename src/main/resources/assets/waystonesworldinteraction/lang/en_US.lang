@@ -1,0 +1,10 @@
+entity.Villager.waystoner=Waystoner
+
+item.waystonesworldinteraction:bound_scroll.name=Bound Scroll
+item.waystonesworldinteraction:warp_stone_core.name=Warp Stone Core
+item.waystonesworldinteraction:warp_stone_shard.name=Warp Stone Shard
+
+tooltip.waystonesworldinteraction:inert=Inert
+tooltip.waystonesworldinteraction:charge=Charge
+tooltip.waystonesworldinteraction:charged=Charged
+tooltip.waystonesworldinteraction:old_scroll=Old Scroll, hard to read
