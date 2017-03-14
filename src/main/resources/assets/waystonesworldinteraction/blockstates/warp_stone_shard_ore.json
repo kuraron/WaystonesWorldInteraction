@@ -1,0 +1,17 @@
+{
+    "forge_marker": 1,
+    "defaults": {
+        "textures": {
+            "all": "waystonesworldinteraction:blocks/warp_stone_shard_ore"
+        },
+        "model": "cube_all"
+    },
+    "variants": {
+        "normal": [{
+
+        }],
+        "inventory": [{
+            
+        }]
+    }
+}

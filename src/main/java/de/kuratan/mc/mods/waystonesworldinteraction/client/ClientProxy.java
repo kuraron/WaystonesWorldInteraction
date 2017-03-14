@@ -6,6 +6,7 @@ import de.kuratan.mc.mods.waystonesworldinteraction.util.WaystonesIntegration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.item.Item;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
@@ -20,6 +21,7 @@ public class ClientProxy extends CommonProxy {
         ModelLoader.setCustomModelResourceLocation(WaystonesWorldInteraction.itemBoundScroll, 0, new ModelResourceLocation(WaystonesWorldInteraction.itemBoundScroll.getRegistryName(), "inventory"));
         ModelLoader.setCustomModelResourceLocation(WaystonesWorldInteraction.itemWarpStoneCore, 0, new ModelResourceLocation(WaystonesWorldInteraction.itemWarpStoneCore.getRegistryName(), "inventory"));
         ModelLoader.setCustomModelResourceLocation(WaystonesWorldInteraction.itemWarpStoneShard, 0, new ModelResourceLocation(WaystonesWorldInteraction.itemWarpStoneShard.getRegistryName(), "inventory"));
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(WaystonesWorldInteraction.blockWarpStoneShardOre), 0, new ModelResourceLocation(WaystonesWorldInteraction.blockWarpStoneShardOre.getRegistryName(), "inventory"));
     }
 
     @Override

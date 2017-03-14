@@ -4,6 +4,8 @@ item.waystonesworldinteraction:bound_scroll.name=Bound Scroll
 item.waystonesworldinteraction:warp_stone_core.name=Warp Stone Core
 item.waystonesworldinteraction:warp_stone_shard.name=Warp Stone Shard
 
+tile.waystonesworldinteraction:warp_stone_shard_ore.name=Warp Stone Shard Ore
+
 tooltip.waystonesworldinteraction:inert=Inert
 tooltip.waystonesworldinteraction:charge=Charge
 tooltip.waystonesworldinteraction:charged=Charged

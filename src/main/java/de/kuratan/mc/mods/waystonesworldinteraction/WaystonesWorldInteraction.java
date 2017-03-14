@@ -1,5 +1,6 @@
 package de.kuratan.mc.mods.waystonesworldinteraction;
 
+import de.kuratan.mc.mods.waystonesworldinteraction.block.BlockWarpStoneShardOre;
 import de.kuratan.mc.mods.waystonesworldinteraction.item.*;
 import de.kuratan.mc.mods.waystonesworldinteraction.network.NetworkHandler;
 import de.kuratan.mc.mods.waystonesworldinteraction.util.WaystonesIntegration;
@@ -9,6 +10,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraftforge.common.MinecraftForge;
@@ -58,6 +60,9 @@ public class WaystonesWorldInteraction {
     public static ItemWarpStoneShard itemWarpStoneShard;
     public static ItemWarpStoneCore itemWarpStoneCore;
 
+    public static BlockWarpStoneShardOre blockWarpStoneShardOre;
+    public static ItemBlock itemBlockWarpStoneShardOre;
+
     public static Configuration configuration;
     private WaystonesWorldInteractionConfig config;
 
@@ -74,6 +79,11 @@ public class WaystonesWorldInteraction {
         GameRegistry.register(itemWarpStoneCore);
         itemWarpStoneShard = new ItemWarpStoneShard();
         GameRegistry.register(itemWarpStoneShard);
+        blockWarpStoneShardOre = new BlockWarpStoneShardOre();
+        GameRegistry.register(blockWarpStoneShardOre);
+        itemBlockWarpStoneShardOre = new ItemBlock(blockWarpStoneShardOre);
+        itemBlockWarpStoneShardOre.setRegistryName(blockWarpStoneShardOre.getRegistryName());
+        GameRegistry.register(itemBlockWarpStoneShardOre);
 
         NetworkHandler.init();
 
@@ -123,6 +133,7 @@ public class WaystonesWorldInteraction {
             itemBoundScroll.setCreativeTab(waystonesTab);
             itemWarpStoneCore.setCreativeTab(waystonesTab);
             itemWarpStoneShard.setCreativeTab(waystonesTab);
+            blockWarpStoneShardOre.setCreativeTab(waystonesTab);
         } else {
             logger.warn("Could not find Waystones creative tab.");
         }

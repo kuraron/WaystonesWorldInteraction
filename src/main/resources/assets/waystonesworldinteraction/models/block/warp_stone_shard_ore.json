@@ -1,0 +1,6 @@
+{
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "waystonesworldinteraction:blocks/warp_stone_shard_ore"
+  }
+}
