@@ -1,6 +1,7 @@
 entity.Villager.waystoner=Waystoner
 
 item.waystonesworldinteraction:bound_scroll.name=Bound Scroll
+item.waystonesworldinteraction:bound_scroll_old.name=Old Bound Scroll
 item.waystonesworldinteraction:warp_stone_core.name=Warp Stone Core
 item.waystonesworldinteraction:warp_stone_shard.name=Warp Stone Shard
 

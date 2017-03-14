@@ -6,6 +6,7 @@ import de.kuratan.mc.mods.waystonesworldinteraction.util.WaystonesIntegration;
 import net.blay09.mods.waystones.WaystoneManager;
 import net.blay09.mods.waystones.util.WaystoneEntry;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
@@ -14,10 +15,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
@@ -34,6 +32,7 @@ public class ItemBoundScroll extends Item {
         setRegistryName(WaystonesWorldInteraction.MOD_ID, "bound_scroll");
         setUnlocalizedName(getRegistryName().toString());
         setMaxStackSize(4);
+        setHasSubtypes(true);
     }
 
     protected NBTTagCompound getBoundToTag(ItemStack itemStack) {
@@ -70,6 +69,9 @@ public class ItemBoundScroll extends Item {
         if (!world.isRemote && entity instanceof EntityPlayer) {
             WaystoneEntry lastEntry = tagToEntry(getBoundToTag(itemStack));
             if (lastEntry != null) {
+                if (!WaystoneManager.checkAndUpdateWaystone((EntityPlayer) entity, lastEntry)) {
+                    WaystoneManager.addPlayerWaystone((EntityPlayer) entity, lastEntry);
+                }
                 if (WaystoneManager.teleportToWaystone((EntityPlayer) entity, lastEntry)) {
                     if (!((EntityPlayer) entity).capabilities.isCreativeMode) {
                         itemStack.shrink(1);
@@ -84,14 +86,14 @@ public class ItemBoundScroll extends Item {
     public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
         if (!world.isRemote) {
             ItemStack itemStack = player.getHeldItem(hand);
-            if (itemStack.getItem().equals(WaystonesWorldInteraction.itemBoundScroll)) {
+            if (itemStack.getItem().equals(WaystonesWorldInteraction.itemBoundScroll) && itemStack.getMetadata() == 0) {
                 if (itemStack.getSubCompound("boundTo") == null ||
-                        WaystonesWorldInteraction.instance.getConfig().allowBoundScrollRebind && player.isSneaking()) {
+                        itemStack.getMetadata() == 0 && WaystonesWorldInteraction.instance.getConfig().allowBoundScrollRebind && player.isSneaking()) {
                     // Try position
-                    TileEntity tileEntity = world.getTileEntity(new BlockPos(hitX, hitY, hitZ));
+                    TileEntity tileEntity = world.getTileEntity(pos);
                     // Try below
                     if (tileEntity == null) {
-                        tileEntity = world.getTileEntity(new BlockPos(hitX, hitY, hitZ).add(0, -1, 0));
+                        tileEntity = world.getTileEntity(pos.add(0, -1, 0));
                     }
                     // Check for Waystone
                     if (tileEntity != null) {
@@ -101,9 +103,9 @@ public class ItemBoundScroll extends Item {
                                 itemStack.setTagCompound(new NBTTagCompound());
                             }
                             NBTTagCompound container = new NBTTagCompound();
-                            container.setString("name", waystoneData.name);
-                            container.setInteger("dimensionId", world.provider.getDimension());
-                            container.setLong("pos", waystoneData.pos.toLong());
+                            container.setString("name", waystoneData.getName());
+                            container.setInteger("dimensionId", waystoneData.getDimension());
+                            container.setLong("pos", waystoneData.getPos().toLong());
                             itemStack.setTagInfo("boundTo", container);
                             WaystonesWorldInteraction.proxy.playSound(SoundEvents.BLOCK_ANVIL_PLACE, new BlockPos(player.posX, player.posY, player.posZ), 2f);
                             return EnumActionResult.SUCCESS;
@@ -126,9 +128,23 @@ public class ItemBoundScroll extends Item {
             player.setActiveHand(hand);
             return new ActionResult<>(EnumActionResult.SUCCESS, itemStack);
         } else {
-            player.sendStatusMessage(new TextComponentTranslation("tooltip."+WaystonesWorldInteraction.MOD_ID+":scrollNotBound"), true);
+            player.sendStatusMessage(new TextComponentTranslation("tooltip." + WaystonesWorldInteraction.MOD_ID + ":scrollNotBound"), true);
             return new ActionResult<>(EnumActionResult.FAIL, itemStack);
         }
+    }
+
+    @Override
+    public void getSubItems(Item itemIn, CreativeTabs tab, NonNullList<ItemStack> subItems) {
+        subItems.add(new ItemStack(this, 1, 0));
+        subItems.add(new ItemStack(this, 1, 1));
+    }
+
+    @Override
+    public String getUnlocalizedName(ItemStack stack) {
+        if (stack.getMetadata() > 0) {
+            return super.getUnlocalizedName(stack) + "_old";
+        }
+        return super.getUnlocalizedName(stack);
     }
 
     @Override
@@ -141,10 +157,14 @@ public class ItemBoundScroll extends Item {
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack itemStack, EntityPlayer player, List<String> list, boolean debug) {
         NBTTagCompound lastEntry = getBoundToTag(itemStack);
-        if (lastEntry != null) {
-            list.add(TextFormatting.GRAY + I18n.format("tooltip."+WAYSTONES_MOD_ID+":boundTo", TextFormatting.DARK_AQUA + lastEntry.getString("name")));
+        if (itemStack.getMetadata() == 0) {
+            if (lastEntry != null) {
+                list.add(TextFormatting.GRAY + I18n.format("tooltip." + WAYSTONES_MOD_ID + ":boundTo", TextFormatting.DARK_AQUA + lastEntry.getString("name")));
+            } else {
+                list.add(TextFormatting.GRAY + I18n.format("tooltip." + WAYSTONES_MOD_ID + ":boundTo", I18n.format("tooltip." + WAYSTONES_MOD_ID + ":none")));
+            }
         } else {
-            list.add(TextFormatting.GRAY + I18n.format("tooltip."+WAYSTONES_MOD_ID+":boundTo", I18n.format("tooltip."+WAYSTONES_MOD_ID+":none")));
+            list.add(TextFormatting.GRAY + I18n.format("tooltip." + WAYSTONES_MOD_ID + ":boundTo", TextFormatting.OBFUSCATED + "Unknown"));
         }
     }
 }
