@@ -4,6 +4,7 @@ import de.kuratan.mc.mods.waystonesworldinteraction.block.BlockWarpStoneShardOre
 import de.kuratan.mc.mods.waystonesworldinteraction.item.*;
 import de.kuratan.mc.mods.waystonesworldinteraction.network.NetworkHandler;
 import de.kuratan.mc.mods.waystonesworldinteraction.util.WaystonesIntegration;
+import de.kuratan.mc.mods.waystonesworldinteraction.world.WorldGenerator;
 import de.kuratan.mc.mods.waystonesworldinteraction.world.stronghold.StrongholdGenerator;
 import de.kuratan.mc.mods.waystonesworldinteraction.world.village.VillageCreationWaystone;
 import net.minecraft.creativetab.CreativeTabs;
@@ -94,6 +95,8 @@ public class WaystonesWorldInteraction {
             configuration.save();
         }
         WaystonesIntegration.getLocalWaystonesConfiguration(event.getModConfigurationDirectory());
+
+        GameRegistry.registerWorldGenerator(new WorldGenerator(), 0);
 
         proxy.preInit(event);
     }
