@@ -2,10 +2,13 @@ package de.kuratan.mc.mods.waystonesworldinteraction.item;
 
 import de.kuratan.mc.mods.waystonesworldinteraction.WaystonesWorldInteraction;
 import de.kuratan.mc.mods.waystonesworldinteraction.util.WaystoneData;
-import de.kuratan.mc.mods.waystonesworldinteraction.util.WaystoneIntegration;
+import de.kuratan.mc.mods.waystonesworldinteraction.util.WaystonesIntegration;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -24,7 +27,7 @@ public class ItemHandler {
                         tileEntity = event.getWorld().getTileEntity(event.getPos().add(0, -1, 0));
                     }
                     // Check for Waystone
-                    WaystoneData waystoneData = WaystoneIntegration.getWaystoneDataFromTileEntity(tileEntity);
+                    WaystoneData waystoneData = WaystonesIntegration.getWaystoneDataFromTileEntity(tileEntity);
                     if (waystoneData != null) {
                         if (!itemStack.hasTagCompound()) {
                             itemStack.setTagCompound(new NBTTagCompound());
@@ -35,6 +38,8 @@ public class ItemHandler {
                         container.setLong("pos", waystoneData.pos.toLong());
                         itemStack.setTagInfo("boundTo", container);
                         event.setCanceled(true);
+                        EntityPlayer player = event.getEntityPlayer();
+                        WaystonesWorldInteraction.proxy.playSound(SoundEvents.BLOCK_ANVIL_PLACE, new BlockPos(player.posX, player.posY, player.posZ), 2f);;
                     }
                 }
             }

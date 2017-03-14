@@ -2,7 +2,6 @@ package de.kuratan.mc.mods.waystonesworldinteraction.item;
 
 import de.kuratan.mc.mods.waystonesworldinteraction.WaystonesWorldInteraction;
 import net.blay09.mods.waystones.WaystoneManager;
-import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.util.WaystoneEntry;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLivingBase;
@@ -24,7 +23,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
-import static de.kuratan.mc.mods.waystonesworldinteraction.WaystonesWorldInteraction.WAYSTONES_MOD_ID;
+import static de.kuratan.mc.mods.waystonesworldinteraction.util.WaystonesIntegration.WAYSTONES_MOD_ID;
 
 public class ItemBoundScroll extends Item {
     public ItemBoundScroll() {
@@ -75,7 +74,7 @@ public class ItemBoundScroll extends Item {
         NBTTagCompound boundToTag = getBoundToTag(itemStack);
         if (boundToTag != null) {
             if (!player.isHandActive() && world.isRemote) {
-                Waystones.proxy.playSound(SoundEvents.BLOCK_PORTAL_TRIGGER, new BlockPos(player.posX, player.posY, player.posZ), 2f);
+                WaystonesWorldInteraction.proxy.playSound(SoundEvents.BLOCK_PORTAL_TRIGGER, new BlockPos(player.posX, player.posY, player.posZ), 2f);
             }
             player.setActiveHand(hand);
             return new ActionResult<>(EnumActionResult.SUCCESS, itemStack);

@@ -1,6 +1,7 @@
 package de.kuratan.mc.mods.waystonesworldinteraction.world.stronghold;
 
-import de.kuratan.mc.mods.waystonesworldinteraction.util.WaystoneIntegration;
+import de.kuratan.mc.mods.waystonesworldinteraction.util.WaystonesIntegration;
+import de.kuratan.mc.mods.waystonesworldinteraction.world.NameGenerator;
 import net.minecraft.block.BlockSilverfish;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
@@ -132,7 +133,7 @@ public class StrongholdGenerator extends MapGenStronghold {
 
             if (worldIn.provider.getDimension() == 0) {
                 BlockPos blockpos = new BlockPos(this.getXWithOffset(x, z), this.getYWithOffset(y), this.getZWithOffset(x, z));
-                WaystoneIntegration.generateWaystoneInWorld(worldIn, randomIn, blockpos);
+                WaystonesIntegration.generateWaystoneInWorld(worldIn, randomIn, blockpos, NameGenerator.WaystoneLocation.STRONGHOLD);
             }
 
             return true;

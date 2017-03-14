@@ -1,7 +1,8 @@
 package de.kuratan.mc.mods.waystonesworldinteraction.world.village;
 
 import de.kuratan.mc.mods.waystonesworldinteraction.WaystonesWorldInteraction;
-import de.kuratan.mc.mods.waystonesworldinteraction.util.WaystoneIntegration;
+import de.kuratan.mc.mods.waystonesworldinteraction.util.WaystonesIntegration;
+import de.kuratan.mc.mods.waystonesworldinteraction.world.NameGenerator;
 import net.minecraft.block.BlockStairs;
 import net.minecraft.block.BlockStoneBrick;
 import net.minecraft.block.state.IBlockState;
@@ -19,9 +20,9 @@ import java.util.List;
 import java.util.Random;
 
 enum VillageWaystoneTypes {
-    SIMPLE(0, 0, 0, 5, 4, 5, 2, 1, 2),
-    ORNATE(0, 0, 0, 7, 4, 7, 3, 2, 3),
-    ENCLOSED(0, 0, 0, 9, 9, 13, 4, 3, 9);
+    SIMPLE(0, 0, 0, 5, 4, 5, 2, 1, 2, 4),
+    ORNATE(0, 0, 0, 7, 4, 7, 3, 2, 3, 3),
+    ENCLOSED(0, 0, 0, 9, 9, 13, 4, 3, 9, 8);
 
     public final int minX;
     public final int minY;
@@ -32,7 +33,8 @@ enum VillageWaystoneTypes {
     public final int waystoneX;
     public final int waystoneY;
     public final int waystoneZ;
-    VillageWaystoneTypes(int minX, int minY, int minZ, int maxX, int maxY, int maxZ, int waystoneX, int waystoneY, int waystoneZ) {
+    public final int groundLevel;
+    VillageWaystoneTypes(int minX, int minY, int minZ, int maxX, int maxY, int maxZ, int waystoneX, int waystoneY, int waystoneZ, int groundLevel) {
         this.minX = minX;
         this.minY = minY;
         this.minZ = minZ;
@@ -42,6 +44,7 @@ enum VillageWaystoneTypes {
         this.waystoneX = waystoneX;
         this.waystoneY = waystoneY;
         this.waystoneZ = waystoneZ;
+        this.groundLevel = groundLevel;
     }
 }
 
@@ -74,7 +77,7 @@ public class VillageWaystone extends StructureVillagePieces.House1 {
                 return true;
             }
 
-            this.boundingBox.offset(0, this.averageGroundLvl - this.boundingBox.maxY + type.maxY - 1, 0);
+            this.boundingBox.offset(0, this.averageGroundLvl - this.boundingBox.maxY + type.groundLevel - 1, 0);
         }
         if (worldIn.provider.getDimension() != 0) {
             return false;
@@ -92,7 +95,7 @@ public class VillageWaystone extends StructureVillagePieces.House1 {
         }
 
         BlockPos blockpos = new BlockPos(this.getXWithOffset(type.waystoneX, type.waystoneZ), this.getYWithOffset(type.waystoneY), this.getZWithOffset(type.waystoneX, type.waystoneZ));
-        WaystoneIntegration.generateWaystoneInWorld(worldIn, randomIn, blockpos);
+        WaystonesIntegration.generateWaystoneInWorld(worldIn, randomIn, blockpos, NameGenerator.WaystoneLocation.VILLAGE);
 
         return true;
     }

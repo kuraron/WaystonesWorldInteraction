@@ -2,7 +2,7 @@ package de.kuratan.mc.mods.waystonesworldinteraction;
 
 import de.kuratan.mc.mods.waystonesworldinteraction.item.*;
 import de.kuratan.mc.mods.waystonesworldinteraction.network.NetworkHandler;
-import de.kuratan.mc.mods.waystonesworldinteraction.util.WaystoneIntegration;
+import de.kuratan.mc.mods.waystonesworldinteraction.util.WaystonesIntegration;
 import de.kuratan.mc.mods.waystonesworldinteraction.world.stronghold.StrongholdGenerator;
 import de.kuratan.mc.mods.waystonesworldinteraction.world.village.VillageCreationWaystone;
 import net.minecraft.creativetab.CreativeTabs;
@@ -38,7 +38,6 @@ public class WaystonesWorldInteraction {
 
     public static final Logger logger = LogManager.getLogger();
     public static final String MOD_ID = "waystonesworldinteraction";
-    public static final String WAYSTONES_MOD_ID = "waystones";
 
     @Mod.Instance
     public static WaystonesWorldInteraction instance;
@@ -46,11 +45,14 @@ public class WaystonesWorldInteraction {
     @SidedProxy(serverSide = "de.kuratan.mc.mods.waystonesworldinteraction", clientSide = "de.kuratan.mc.mods.waystonesworldinteraction.client.ClientProxy")
     public static CommonProxy proxy;
 
-    @GameRegistry.ObjectHolder(WAYSTONES_MOD_ID+":return_scroll")
+    @GameRegistry.ObjectHolder(WaystonesIntegration.WAYSTONES_MOD_ID+":return_scroll")
     public static Item itemReturnScroll = null;
 
-    @GameRegistry.ObjectHolder(WAYSTONES_MOD_ID+":warp_scroll")
+    @GameRegistry.ObjectHolder(WaystonesIntegration.WAYSTONES_MOD_ID+":warp_scroll")
     public static Item itemWarpScroll = null;
+
+    @GameRegistry.ObjectHolder(WaystonesIntegration.WAYSTONES_MOD_ID+":warp_stone")
+    public static Item itemWarpStone = null;
 
     public static ItemBoundScroll itemBoundScroll;
     public static ItemWarpStoneShard itemWarpStoneShard;
@@ -81,6 +83,7 @@ public class WaystonesWorldInteraction {
         if (configuration.hasChanged()) {
             configuration.save();
         }
+        WaystonesIntegration.getLocalWaystonesConfiguration(event.getModConfigurationDirectory());
 
         proxy.preInit(event);
     }
@@ -115,7 +118,7 @@ public class WaystonesWorldInteraction {
 
     @EventHandler
     public void postInit(FMLPostInitializationEvent event) {
-        CreativeTabs waystonesTab = Arrays.stream(CreativeTabs.CREATIVE_TAB_ARRAY).filter(tab -> tab.getTabLabel().equals(WAYSTONES_MOD_ID)).findFirst().orElse(null);
+        CreativeTabs waystonesTab = Arrays.stream(CreativeTabs.CREATIVE_TAB_ARRAY).filter(tab -> tab.getTabLabel().equals(WaystonesIntegration.WAYSTONES_MOD_ID)).findFirst().orElse(null);
         if (waystonesTab != null) {
             itemBoundScroll.setCreativeTab(waystonesTab);
             itemWarpStoneCore.setCreativeTab(waystonesTab);
@@ -123,8 +126,6 @@ public class WaystonesWorldInteraction {
         } else {
             logger.warn("Could not find Waystones creative tab.");
         }
-
-        Item itemWarpStone = Item.getByNameOrId(WAYSTONES_MOD_ID+":warp_stone");
 
         if (config.removeOriginalWarpstoneRecepie) {
             CraftingManager.getInstance().getRecipeList().removeIf(stack -> stack.getRecipeOutput().getItem() == itemWarpStone);
@@ -152,7 +153,7 @@ public class WaystonesWorldInteraction {
         try {
             Field fieldWorldGenerators = GameRegistry.class.getDeclaredField("worldGenerators");
             fieldWorldGenerators.setAccessible(true);
-            ((Set<IWorldGenerator>) fieldWorldGenerators.get(null)).removeIf(gen -> WaystoneIntegration.isWaystonesWorldGen(gen));
+            ((Set<IWorldGenerator>) fieldWorldGenerators.get(null)).removeIf(gen -> WaystonesIntegration.isWaystonesWorldGen(gen));
             fieldWorldGenerators.setAccessible(false);
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
@@ -162,7 +163,7 @@ public class WaystonesWorldInteraction {
         try {
             Field fieldWorldGeneratorIndex = GameRegistry.class.getDeclaredField("worldGeneratorIndex");
             fieldWorldGeneratorIndex.setAccessible(true);
-            ((Map<IWorldGenerator, Integer>) fieldWorldGeneratorIndex.get(null)).entrySet().removeIf(entry -> WaystoneIntegration.isWaystonesWorldGen(entry.getKey()));
+            ((Map<IWorldGenerator, Integer>) fieldWorldGeneratorIndex.get(null)).entrySet().removeIf(entry -> WaystonesIntegration.isWaystonesWorldGen(entry.getKey()));
             fieldWorldGeneratorIndex.setAccessible(true);
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
