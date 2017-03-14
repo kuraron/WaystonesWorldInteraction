@@ -22,6 +22,7 @@ public class BlockWarpStoneShardOre extends Block {
         setHardness(3.0F);
         setResistance(5.0F);
         setSoundType(SoundType.STONE);
+        setHarvestLevel("pickaxe", 2);
     }
 
     /**
@@ -45,7 +46,7 @@ public class BlockWarpStoneShardOre extends Block {
      */
     public int quantityDropped(Random random)
     {
-        return 4 + random.nextInt(2);
+        return 1 + random.nextInt(2);
     }
 
     /**
@@ -61,7 +62,7 @@ public class BlockWarpStoneShardOre extends Block {
     {
         if (this.getItemDropped(state, RANDOM, fortune) != Item.getItemFromBlock(this))
         {
-            return 1 + RANDOM.nextInt(5);
+            return 1 + RANDOM.nextInt(3);
         }
         return 0;
     }
