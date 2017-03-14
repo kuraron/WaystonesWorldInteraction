@@ -1,8 +1,8 @@
 package de.kuratan.mc.mods.waystonesworldinteraction.network.handler;
 
 import de.kuratan.mc.mods.waystonesworldinteraction.WaystonesWorldInteraction;
+import de.kuratan.mc.mods.waystonesworldinteraction.network.NetworkHandler;
 import de.kuratan.mc.mods.waystonesworldinteraction.network.message.MessageConfig;
-import net.blay09.mods.waystones.network.NetworkHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;

@@ -12,6 +12,7 @@ public class WaystonesWorldInteractionConfig {
     public boolean enableWaystoneShardWorldGen;
 
     public boolean removeOriginalWarpstoneRecepie;
+    public boolean allowBoundScrollRebind;
 
     public void reloadLocal(Configuration config) {
         deactivateOriginalWorldGen = config.getBoolean("Deactivate Original WorldGen", "worldgen", true, "Shall the original WorldGen be deactivated.");
@@ -22,6 +23,7 @@ public class WaystonesWorldInteractionConfig {
         enableWaystoneShardWorldGen = config.getBoolean("Generate Waystone Shard Ore", "worldgen", false, "Spawn Waystone Shards like Emerald ore");
 
         removeOriginalWarpstoneRecepie = config.getBoolean("Deactivate original warp stone recepie", "general", true, "Removes the original recepie for the warp stone");
+        allowBoundScrollRebind = config.getBoolean("Rebind Bound Scroll", "general", false, "Allow players to rebind bound scrolls by sneak-rightclick");
     }
 
     public static WaystonesWorldInteractionConfig read(ByteBuf buf) {
@@ -32,6 +34,7 @@ public class WaystonesWorldInteractionConfig {
         config.spawnWaystonesVillagers = buf.readBoolean();
         config.enableWaystoneShardWorldGen = buf.readBoolean();
         config.removeOriginalWarpstoneRecepie = buf.readBoolean();
+        config.allowBoundScrollRebind = buf.readBoolean();
         return config;
     }
 
@@ -42,5 +45,6 @@ public class WaystonesWorldInteractionConfig {
         buf.writeBoolean(spawnWaystonesVillagers);
         buf.writeBoolean(enableWaystoneShardWorldGen);
         buf.writeBoolean(removeOriginalWarpstoneRecepie);
+        buf.writeBoolean(allowBoundScrollRebind);
     }
 }

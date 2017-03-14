@@ -24,6 +24,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
+import static de.kuratan.mc.mods.waystonesworldinteraction.WaystonesWorldInteraction.WAYSTONES_MOD_ID;
+
 public class ItemBoundScroll extends Item {
     public ItemBoundScroll() {
         setRegistryName(WaystonesWorldInteraction.MOD_ID, "bound_scroll");
@@ -78,7 +80,7 @@ public class ItemBoundScroll extends Item {
             player.setActiveHand(hand);
             return new ActionResult<>(EnumActionResult.SUCCESS, itemStack);
         } else {
-            player.sendStatusMessage(new TextComponentTranslation("waystones:scrollNotBound"), true);
+            player.sendStatusMessage(new TextComponentTranslation(WAYSTONES_MOD_ID+":scrollNotBound"), true);
             return new ActionResult<>(EnumActionResult.FAIL, itemStack);
         }
     }
@@ -92,11 +94,11 @@ public class ItemBoundScroll extends Item {
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack itemStack, EntityPlayer player, List<String> list, boolean debug) {
-        WaystoneEntry lastEntry = tagToEntry(getBoundToTag(itemStack));
+        NBTTagCompound lastEntry = getBoundToTag(itemStack);
         if (lastEntry != null) {
-            list.add(TextFormatting.GRAY + I18n.format("tooltip.waystones:boundTo", TextFormatting.DARK_AQUA + lastEntry.getName()));
+            list.add(TextFormatting.GRAY + I18n.format("tooltip."+WAYSTONES_MOD_ID+":boundTo", TextFormatting.DARK_AQUA + lastEntry.getString("name")));
         } else {
-            list.add(TextFormatting.GRAY + I18n.format("tooltip.waystones:boundTo", I18n.format("tooltip.waystones:none")));
+            list.add(TextFormatting.GRAY + I18n.format("tooltip."+WAYSTONES_MOD_ID+":boundTo", I18n.format("tooltip."+WAYSTONES_MOD_ID+":none")));
         }
     }
 }

@@ -1,14 +1,9 @@
 package de.kuratan.mc.mods.waystonesworldinteraction.world.stronghold;
 
-import net.blay09.mods.waystones.Waystones;
-import net.blay09.mods.waystones.block.BlockWaystone;
-import net.blay09.mods.waystones.block.TileWaystone;
-import net.blay09.mods.waystones.worldgen.NameGenerator;
+import de.kuratan.mc.mods.waystonesworldinteraction.util.WaystoneIntegration;
 import net.minecraft.block.BlockSilverfish;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.structure.*;
@@ -19,8 +14,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.List;
 import java.util.Random;
-
-import static de.kuratan.mc.mods.waystonesworldinteraction.WaystonesWorldInteraction.logger;
 
 public class StrongholdGenerator extends MapGenStronghold {
 
@@ -139,16 +132,7 @@ public class StrongholdGenerator extends MapGenStronghold {
 
             if (worldIn.provider.getDimension() == 0) {
                 BlockPos blockpos = new BlockPos(this.getXWithOffset(x, z), this.getYWithOffset(y), this.getZWithOffset(x, z));
-                EnumFacing facing = EnumFacing.values()[2 + randomIn.nextInt(4)];
-                this.setBlockState(worldIn, Blocks.SEA_LANTERN.getDefaultState(), x, y - 1, z, structureBoundingBoxIn);
-                this.setBlockState(worldIn, Waystones.blockWaystone.getDefaultState().withProperty(BlockWaystone.BASE, true).withProperty(BlockWaystone.FACING, facing), x, y, z, structureBoundingBoxIn);
-                this.setBlockState(worldIn, Waystones.blockWaystone.getDefaultState().withProperty(BlockWaystone.BASE, false).withProperty(BlockWaystone.FACING, facing), x, y + 1, z, structureBoundingBoxIn);
-                TileEntity tileEntity = worldIn.getTileEntity(blockpos);
-                if (tileEntity instanceof TileWaystone) {
-                    waystoneName = NameGenerator.getName(worldIn.getBiome(blockpos), randomIn);
-                    ((TileWaystone) tileEntity).setWaystoneName(waystoneName);
-                    logger.warn("Created Waystone '{}' @{}", waystoneName, blockpos);
-                }
+                WaystoneIntegration.generateWaystoneInWorld(worldIn, randomIn, blockpos);
             }
 
             return true;
