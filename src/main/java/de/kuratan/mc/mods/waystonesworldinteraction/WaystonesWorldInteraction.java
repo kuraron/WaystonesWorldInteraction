@@ -131,7 +131,6 @@ public class WaystonesWorldInteraction {
         }
 
         GameRegistry.addRecipe(new ItemStack(itemBoundScroll), "E  ", " P ", "  P", 'E', Items.ENDER_PEARL, 'P', Items.PAPER);
-        GameRegistry.addRecipe(new ItemStack(itemWarpStoneCore, 1, 1), " E ", "ECE", " E ", 'E', Items.ENDER_PEARL, 'C', new ItemStack(itemWarpStoneCore, 1, 0));
         GameRegistry.addRecipe(new ItemStack(itemWarpStone), "SSS", "SCS", "SSS", 'S', itemWarpStoneShard, 'C', new ItemStack(itemWarpStoneCore, 1, 16));
         List<ItemStack> list = new LinkedList<>();
         list.add(new ItemStack(Items.ENDER_PEARL));
@@ -163,12 +162,7 @@ public class WaystonesWorldInteraction {
         try {
             Field fieldWorldGeneratorIndex = GameRegistry.class.getDeclaredField("worldGeneratorIndex");
             fieldWorldGeneratorIndex.setAccessible(true);
-            Map<IWorldGenerator, Integer> worldGeneratorIndex = ((Map<IWorldGenerator, Integer>) fieldWorldGeneratorIndex.get(null));
-            for (Map.Entry<IWorldGenerator, Integer> entry: worldGeneratorIndex.entrySet()) {
-                if (WaystoneIntegration.isWaystonesWorldGen(entry.getKey())) {
-                    worldGeneratorIndex.remove(entry.getKey());
-                }
-            }
+            ((Map<IWorldGenerator, Integer>) fieldWorldGeneratorIndex.get(null)).entrySet().removeIf(entry -> WaystoneIntegration.isWaystonesWorldGen(entry.getKey()));
             fieldWorldGeneratorIndex.setAccessible(true);
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
