@@ -1,6 +1,8 @@
 package de.kuratan.mc.mods.waystonesworldinteraction.item;
 
 import de.kuratan.mc.mods.waystonesworldinteraction.WaystonesWorldInteraction;
+import de.kuratan.mc.mods.waystonesworldinteraction.util.WaystoneData;
+import de.kuratan.mc.mods.waystonesworldinteraction.util.WaystonesIntegration;
 import net.blay09.mods.waystones.WaystoneManager;
 import net.blay09.mods.waystones.util.WaystoneEntry;
 import net.minecraft.client.resources.I18n;
@@ -11,8 +13,10 @@ import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
@@ -45,12 +49,20 @@ public class ItemBoundScroll extends Item {
 
     @Override
     public int getMaxItemUseDuration(ItemStack itemStack) {
-        return 32;
+        NBTTagCompound lastEntry = getBoundToTag(itemStack);
+        if (lastEntry != null) {
+            return 32;
+        }
+        return 0;
     }
 
     @Override
     public EnumAction getItemUseAction(ItemStack itemStack) {
-        return EnumAction.BOW;
+        NBTTagCompound lastEntry = getBoundToTag(itemStack);
+        if (lastEntry != null) {
+            return EnumAction.BOW;
+        }
+        return EnumAction.NONE;
     }
 
     @Override
@@ -69,6 +81,41 @@ public class ItemBoundScroll extends Item {
     }
 
     @Override
+    public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
+        if (!world.isRemote) {
+            ItemStack itemStack = player.getHeldItem(hand);
+            if (itemStack.getItem().equals(WaystonesWorldInteraction.itemBoundScroll)) {
+                if (itemStack.getSubCompound("boundTo") == null ||
+                        WaystonesWorldInteraction.instance.getConfig().allowBoundScrollRebind && player.isSneaking()) {
+                    // Try position
+                    TileEntity tileEntity = world.getTileEntity(new BlockPos(hitX, hitY, hitZ));
+                    // Try below
+                    if (tileEntity == null) {
+                        tileEntity = world.getTileEntity(new BlockPos(hitX, hitY, hitZ).add(0, -1, 0));
+                    }
+                    // Check for Waystone
+                    if (tileEntity != null) {
+                        WaystoneData waystoneData = WaystonesIntegration.getWaystoneDataFromTileEntity(tileEntity);
+                        if (waystoneData != null) {
+                            if (!itemStack.hasTagCompound()) {
+                                itemStack.setTagCompound(new NBTTagCompound());
+                            }
+                            NBTTagCompound container = new NBTTagCompound();
+                            container.setString("name", waystoneData.name);
+                            container.setInteger("dimensionId", world.provider.getDimension());
+                            container.setLong("pos", waystoneData.pos.toLong());
+                            itemStack.setTagInfo("boundTo", container);
+                            WaystonesWorldInteraction.proxy.playSound(SoundEvents.BLOCK_ANVIL_PLACE, new BlockPos(player.posX, player.posY, player.posZ), 2f);
+                            return EnumActionResult.SUCCESS;
+                        }
+                    }
+                }
+            }
+        }
+        return EnumActionResult.PASS;
+    }
+
+    @Override
     public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
         ItemStack itemStack = player.getHeldItem(hand);
         NBTTagCompound boundToTag = getBoundToTag(itemStack);
@@ -79,7 +126,7 @@ public class ItemBoundScroll extends Item {
             player.setActiveHand(hand);
             return new ActionResult<>(EnumActionResult.SUCCESS, itemStack);
         } else {
-            player.sendStatusMessage(new TextComponentTranslation(WAYSTONES_MOD_ID+":scrollNotBound"), true);
+            player.sendStatusMessage(new TextComponentTranslation("tooltip."+WaystonesWorldInteraction.MOD_ID+":scrollNotBound"), true);
             return new ActionResult<>(EnumActionResult.FAIL, itemStack);
         }
     }

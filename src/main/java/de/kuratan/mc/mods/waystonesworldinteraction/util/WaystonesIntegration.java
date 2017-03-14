@@ -30,7 +30,6 @@ public class WaystonesIntegration {
 
     public static WaystoneData getWaystoneDataFromTileEntity(TileEntity tileEntity) {
         NBTTagCompound tileNBT = tileEntity.serializeNBT();
-        logger.warn(tileNBT);
         if (tileNBT.hasKey(NBT_WAYSTONE_NAME)) {
             return new WaystoneData(tileNBT.getString(NBT_WAYSTONE_NAME),
                     tileNBT.getInteger(NBT_WAYSTONE_X),

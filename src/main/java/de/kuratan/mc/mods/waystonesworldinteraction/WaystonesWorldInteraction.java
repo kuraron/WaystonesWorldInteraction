@@ -126,7 +126,6 @@ public class WaystonesWorldInteraction {
         if (config.createStrongholdWaystones) {
             MinecraftForge.TERRAIN_GEN_BUS.register(new StrongholdGenerator());
         }
-        MinecraftForge.EVENT_BUS.register(new ItemHandler());
     }
 
     @EventHandler

@@ -10,3 +10,4 @@ tooltip.waystonesworldinteraction:inert=Inert
 tooltip.waystonesworldinteraction:charge=Charge
 tooltip.waystonesworldinteraction:charged=Charged
 tooltip.waystonesworldinteraction:old_scroll=Old Scroll, hard to read
+tooltip.waystonesworldinteraction:scrollNotBound=Scroll not bound to any Waystone
