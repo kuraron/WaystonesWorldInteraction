@@ -20,8 +20,6 @@ import java.io.File;
 import java.util.Map;
 import java.util.Random;
 
-import static de.kuratan.mc.mods.waystonesworldinteraction.WaystonesWorldInteraction.logger;
-
 public class WaystonesIntegration extends WorldSavedData {
 
     private static final String DATA_NAME = WaystonesWorldInteraction.MOD_ID + "_GeneratedWaystones";
@@ -39,6 +37,7 @@ public class WaystonesIntegration extends WorldSavedData {
     public static final String WAYSTONE_ENTRY_NBT_DIMENSION = "Dimension";
     public static final String WAYSTONE_ENTRY_NBT_POSITION = "Position";
     public static final String WAYSTONE_ENTRY_NBT_IS_GLOBAL = "IsGlobal";
+    public static final String WAYSTONE_ENTRY_NBT_LOCATION = "Location";
 
     public static final String WAYSTONES_WORLDGEN_CANONICAL_NAME = "net.blay09.mods.waystones.worldgen.WaystoneWorldGen";
     public static final String WAYSTONES_MOD_ID = "waystones";
@@ -70,7 +69,10 @@ public class WaystonesIntegration extends WorldSavedData {
         generatedWaystones.entrySet().removeIf(entry -> entry.getValue().pos.equals(data.pos));
         generatedWaystones.put(data.getName(), data);
         markDirty();
-        logger.warn("Added waystone {}", data);
+    }
+
+    public WaystoneData getRandomWaystone() {
+        return generatedWaystones.get(generatedWaystones.keySet().toArray()[0]);
     }
 
     @Override
@@ -127,7 +129,7 @@ public class WaystonesIntegration extends WorldSavedData {
             NBTTagCompound tileData = tileEntity.serializeNBT();
             tileData.setString(WAYSTONE_TILE_NBT_NAME, waystoneName);
             tileEntity.deserializeNBT(tileData);
-            WaystonesIntegration.get(world).addWaystone(getWaystoneDataFromTileEntity(tileEntity));
+            WaystonesIntegration.get(world).addWaystone(getWaystoneDataFromTileEntity(tileEntity).setLocation(location));
         }
     }
 

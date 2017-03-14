@@ -25,6 +25,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
+import static de.kuratan.mc.mods.waystonesworldinteraction.WaystonesWorldInteraction.logger;
 import static de.kuratan.mc.mods.waystonesworldinteraction.util.WaystonesIntegration.WAYSTONES_MOD_ID;
 
 public class ItemBoundScroll extends Item {
@@ -86,9 +87,13 @@ public class ItemBoundScroll extends Item {
     public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
         if (!world.isRemote) {
             ItemStack itemStack = player.getHeldItem(hand);
-            if (itemStack.getItem().equals(WaystonesWorldInteraction.itemBoundScroll) && itemStack.getMetadata() == 0) {
+            if (itemStack.getItem().equals(WaystonesWorldInteraction.itemBoundScroll)) {
                 if (itemStack.getSubCompound("boundTo") == null ||
                         itemStack.getMetadata() == 0 && WaystonesWorldInteraction.instance.getConfig().allowBoundScrollRebind && player.isSneaking()) {
+                    if (itemStack.getMetadata() > 0) {
+                        bindToRandomGeneratedWaystone(player, world, itemStack);
+                        return EnumActionResult.SUCCESS;
+                    }
                     // Try position
                     TileEntity tileEntity = world.getTileEntity(pos);
                     // Try below
@@ -117,11 +122,25 @@ public class ItemBoundScroll extends Item {
         return EnumActionResult.PASS;
     }
 
+    protected void bindToRandomGeneratedWaystone(EntityPlayer player, World world, ItemStack itemStack) {
+        WaystoneData waystoneData = WaystonesIntegration.get(world).getRandomWaystone();
+        if (waystoneData != null) {
+            if (!itemStack.hasTagCompound()) {
+                itemStack.setTagCompound(new NBTTagCompound());
+            }
+            NBTTagCompound container = new NBTTagCompound();
+            container.setString("name", waystoneData.getName());
+            container.setInteger("dimensionId", waystoneData.getDimension());
+            container.setLong("pos", waystoneData.getPos().toLong());
+            itemStack.setTagInfo("boundTo", container);
+        }
+    }
+
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
         ItemStack itemStack = player.getHeldItem(hand);
         NBTTagCompound boundToTag = getBoundToTag(itemStack);
-        if (boundToTag != null) {
+        if (boundToTag != null || itemStack.getMetadata() > 0) {
             if (!player.isHandActive() && world.isRemote) {
                 WaystonesWorldInteraction.proxy.playSound(SoundEvents.BLOCK_PORTAL_TRIGGER, new BlockPos(player.posX, player.posY, player.posZ), 2f);
             }
@@ -150,7 +169,7 @@ public class ItemBoundScroll extends Item {
     @Override
     @SideOnly(Side.CLIENT)
     public boolean hasEffect(ItemStack stack) {
-        return getBoundToTag(stack) != null;
+        return getBoundToTag(stack) != null || stack.getMetadata() > 0;
     }
 
     @Override
