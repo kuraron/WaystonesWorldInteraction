@@ -212,8 +212,8 @@ public class VillageWaystone extends StructureVillagePieces.House1 {
             for (int k = type.minZ; k < type.maxZ; ++k)
             {
                 this.setBlockState(worldIn, base, l, 0, k, structureBoundingBoxIn);
-                this.clearCurrentPositionBlocksUpwards(worldIn, k, 1, l, structureBoundingBoxIn);
-                this.replaceAirAndLiquidDownwards(worldIn, base, k, -1, l, structureBoundingBoxIn);
+                this.clearCurrentPositionBlocksUpwards(worldIn, l, 1, k, structureBoundingBoxIn);
+                this.replaceAirAndLiquidDownwards(worldIn, base, l, -1, k, structureBoundingBoxIn);
             }
         }
 
