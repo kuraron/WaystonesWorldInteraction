@@ -17,8 +17,7 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.common.IWorldGenerator;
 
 import java.io.File;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 public class WaystonesIntegration extends WorldSavedData {
 
@@ -72,7 +71,18 @@ public class WaystonesIntegration extends WorldSavedData {
     }
 
     public WaystoneData getRandomWaystone() {
-        return generatedWaystones.get(generatedWaystones.keySet().toArray()[0]);
+        WaystoneData result = null;
+        if (generatedWaystones.size() > 0) {
+            List<WaystoneData> values = new LinkedList<>(generatedWaystones.values());
+            for (int i = 0; i < Math.ceil(values.size() / 10.0); i++) {
+                Collections.shuffle(values);
+                result = values.get(0);
+                if (result.location != NameGenerator.WaystoneLocation.VILLAGE) {
+                    break;
+                }
+            }
+        }
+        return result;
     }
 
     @Override

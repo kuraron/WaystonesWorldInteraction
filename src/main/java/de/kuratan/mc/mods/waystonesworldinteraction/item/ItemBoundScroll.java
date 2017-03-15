@@ -25,7 +25,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
-import static de.kuratan.mc.mods.waystonesworldinteraction.WaystonesWorldInteraction.logger;
 import static de.kuratan.mc.mods.waystonesworldinteraction.util.WaystonesIntegration.WAYSTONES_MOD_ID;
 
 public class ItemBoundScroll extends Item {
@@ -70,7 +69,7 @@ public class ItemBoundScroll extends Item {
         if (!world.isRemote && entity instanceof EntityPlayer) {
             WaystoneEntry lastEntry = tagToEntry(getBoundToTag(itemStack));
             if (lastEntry != null) {
-                if (!WaystoneManager.checkAndUpdateWaystone((EntityPlayer) entity, lastEntry)) {
+                if (itemStack.getMetadata() > 0 && !WaystoneManager.checkAndUpdateWaystone((EntityPlayer) entity, lastEntry)) {
                     WaystoneManager.addPlayerWaystone((EntityPlayer) entity, lastEntry);
                 }
                 if (WaystoneManager.teleportToWaystone((EntityPlayer) entity, lastEntry)) {
@@ -122,7 +121,7 @@ public class ItemBoundScroll extends Item {
         return EnumActionResult.PASS;
     }
 
-    protected void bindToRandomGeneratedWaystone(EntityPlayer player, World world, ItemStack itemStack) {
+    protected boolean bindToRandomGeneratedWaystone(EntityPlayer player, World world, ItemStack itemStack) {
         WaystoneData waystoneData = WaystonesIntegration.get(world).getRandomWaystone();
         if (waystoneData != null) {
             if (!itemStack.hasTagCompound()) {
@@ -133,20 +132,25 @@ public class ItemBoundScroll extends Item {
             container.setInteger("dimensionId", waystoneData.getDimension());
             container.setLong("pos", waystoneData.getPos().toLong());
             itemStack.setTagInfo("boundTo", container);
+            return true;
         }
+        return false;
     }
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
         ItemStack itemStack = player.getHeldItem(hand);
         NBTTagCompound boundToTag = getBoundToTag(itemStack);
-        if (boundToTag != null || itemStack.getMetadata() > 0) {
+        if (boundToTag != null) {
             if (!player.isHandActive() && world.isRemote) {
                 WaystonesWorldInteraction.proxy.playSound(SoundEvents.BLOCK_PORTAL_TRIGGER, new BlockPos(player.posX, player.posY, player.posZ), 2f);
             }
             player.setActiveHand(hand);
             return new ActionResult<>(EnumActionResult.SUCCESS, itemStack);
         } else {
+            if (itemStack.getMetadata() > 0 && bindToRandomGeneratedWaystone(player, world, itemStack)) {
+                return new ActionResult<>(EnumActionResult.SUCCESS, itemStack);
+            }
             player.sendStatusMessage(new TextComponentTranslation("tooltip." + WaystonesWorldInteraction.MOD_ID + ":scrollNotBound"), true);
             return new ActionResult<>(EnumActionResult.FAIL, itemStack);
         }

@@ -115,11 +115,12 @@ public class WaystonesWorldInteraction {
             villagerWaystonerCareer.addTrade(1,
                     new EntityVillager.EmeraldForItems(itemWarpStoneShard, new EntityVillager.PriceInfo(2, 6)),
                     new EntityVillager.ListItemForEmeralds(itemReturnScroll, new EntityVillager.PriceInfo(2, 4)),
-                    new EntityVillager.ListItemForEmeralds(itemBoundScroll, new EntityVillager.PriceInfo(2, 4))
+                    new EntityVillager.ListItemForEmeralds(new ItemStack(itemBoundScroll, 1, 1), new EntityVillager.PriceInfo(3, 5))
             );
             villagerWaystonerCareer.addTrade(2,
                     new EntityVillager.ListItemForEmeralds(new ItemStack(itemWarpStoneShard, 2), new EntityVillager.PriceInfo(4, 8)),
                     new EntityVillager.ListItemForEmeralds(itemWarpScroll, new EntityVillager.PriceInfo(6, 8)),
+                    new EntityVillager.ListItemForEmeralds(itemBoundScroll, new EntityVillager.PriceInfo(2, 4)),
                     new EntityVillager.ItemAndEmeraldToItem(Items.DIAMOND, new EntityVillager.PriceInfo(6, 8), itemWarpStoneCore, new EntityVillager.PriceInfo(1, 1))
             );
         }
