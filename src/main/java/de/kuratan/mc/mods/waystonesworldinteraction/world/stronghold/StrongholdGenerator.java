@@ -96,6 +96,8 @@ public class StrongholdGenerator extends MapGenStronghold {
         private int y = 2;
         private int z = 2;
 
+        public WaystoneCrossing() {}
+
         public WaystoneCrossing(int p_i2083_1_, Random p_i2083_2_, int p_i2083_3_, int p_i2083_4_) {
             super(0, p_i2083_2_, p_i2083_3_, p_i2083_4_);
             this.boundingBox = new StructureBoundingBox(p_i2083_3_, 64, p_i2083_4_, p_i2083_3_ + x * 2 + 1, 74, p_i2083_4_ + y * 2 + 1);
@@ -130,6 +132,7 @@ public class StrongholdGenerator extends MapGenStronghold {
             this.fillWithAir(worldIn, structureBoundingBoxIn, x - 1, 1, 0, x + 1, 3, 0);
             this.fillWithAir(worldIn, structureBoundingBoxIn, x - 1, 1, structureBoundingBoxIn.getZSize(), x + 1, 3, structureBoundingBoxIn.getZSize());
             this.fillWithBlocks(worldIn, structureBoundingBoxIn, x - 1, y - 1, z - 1, x + 1, y - 1, z + 1, Blocks.STONE_SLAB.getDefaultState(), Blocks.STONE_SLAB.getDefaultState(), false);
+            this.setBlockState(worldIn, Blocks.SEA_LANTERN.getDefaultState(), x, y-1, z, structureBoundingBoxIn);
 
             if (worldIn.provider.getDimension() == 0) {
                 BlockPos blockpos = new BlockPos(this.getXWithOffset(x, z), this.getYWithOffset(y), this.getZWithOffset(x, z));
