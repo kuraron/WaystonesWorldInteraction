@@ -37,7 +37,7 @@ public class ItemWarpStoneCore extends Item {
 
         if (!playerIn.capabilities.isCreativeMode)
         {
-            itemstack.damageItem(1, playerIn);
+            itemstack.damageItem(-1, playerIn);
         }
 
         worldIn.playSound(null, playerIn.posX, playerIn.posY, playerIn.posZ, SoundEvents.ENTITY_ENDERPEARL_THROW, SoundCategory.NEUTRAL, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
