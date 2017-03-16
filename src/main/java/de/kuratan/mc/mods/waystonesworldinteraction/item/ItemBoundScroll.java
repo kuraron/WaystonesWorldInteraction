@@ -47,6 +47,15 @@ public class ItemBoundScroll extends Item {
     }
 
     @Override
+    public String getUnlocalizedNameInefficiently(ItemStack stack) {
+        if (stack.getMetadata() == 0) {
+            return getUnlocalizedName();
+        } else {
+            return getUnlocalizedName() + "_old";
+        }
+    }
+
+    @Override
     public int getMaxItemUseDuration(ItemStack itemStack) {
         NBTTagCompound lastEntry = getBoundToTag(itemStack);
         if (lastEntry != null) {
@@ -173,7 +182,7 @@ public class ItemBoundScroll extends Item {
     @Override
     @SideOnly(Side.CLIENT)
     public boolean hasEffect(ItemStack stack) {
-        return getBoundToTag(stack) != null || stack.getMetadata() > 0;
+        return getBoundToTag(stack) != null;
     }
 
     @Override

@@ -1,0 +1,6 @@
+{
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "waystonesworldinteraction:items/bound_scroll_old"
+  }
+}

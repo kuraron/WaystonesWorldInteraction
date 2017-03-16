@@ -8,7 +8,7 @@
   "url": "",
   "updateUrl": "",
   "authorList": ["Kuraron"],
-  "credits": "blay09 for the waystones mod",
+  "credits": "Developed by Kuraron. Thanks to BlayTheNinth for his Waystones mod. Includes item icons based on work by @JoeCreates released under CC-BY-SA 3.0",
   "logoFile": "",
   "screenshots": [],
   "dependencies": ["waystones"]
