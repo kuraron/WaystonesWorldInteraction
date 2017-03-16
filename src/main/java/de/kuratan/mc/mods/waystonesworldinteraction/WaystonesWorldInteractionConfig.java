@@ -8,11 +8,11 @@ public class WaystonesWorldInteractionConfig {
     public boolean createVillageWaystones;
     public boolean createStrongholdWaystones;
     public boolean spawnWaystonesVillagers;
-
     public boolean enableWaystoneShardWorldGen;
 
     public boolean removeOriginalWarpstoneRecepie;
     public boolean allowBoundScrollRebind;
+    public int chargesPerEnderPearl;
 
     public void reloadLocal(Configuration config) {
         deactivateOriginalWorldGen = config.getBoolean("Deactivate Original WorldGen", "worldgen", true, "Shall the original WorldGen be deactivated.");
@@ -24,6 +24,7 @@ public class WaystonesWorldInteractionConfig {
 
         removeOriginalWarpstoneRecepie = config.getBoolean("Deactivate original warp stone recepie", "general", true, "Removes the original recepie for the warp stone");
         allowBoundScrollRebind = config.getBoolean("Rebind Bound Scroll", "general", false, "Allow players to rebind bound scrolls by sneak-rightclick");
+        chargesPerEnderPearl = config.getInt("Charges per Enderpearl", "general", 2, 1, 4, "Charges gained per enderparl");
     }
 
     public static WaystonesWorldInteractionConfig read(ByteBuf buf) {
@@ -35,6 +36,7 @@ public class WaystonesWorldInteractionConfig {
         config.enableWaystoneShardWorldGen = buf.readBoolean();
         config.removeOriginalWarpstoneRecepie = buf.readBoolean();
         config.allowBoundScrollRebind = buf.readBoolean();
+        config.chargesPerEnderPearl = buf.readInt();
         return config;
     }
 
@@ -46,5 +48,6 @@ public class WaystonesWorldInteractionConfig {
         buf.writeBoolean(enableWaystoneShardWorldGen);
         buf.writeBoolean(removeOriginalWarpstoneRecepie);
         buf.writeBoolean(allowBoundScrollRebind);
+        buf.writeInt(chargesPerEnderPearl);
     }
 }

@@ -54,6 +54,8 @@ public class ChargeCoreRecipe extends ShapelessRecipes {
             }
         }
 
-        return new ItemStack(WaystonesWorldInteraction.itemWarpStoneCore, 1, core.getItemDamage()+1);
+        int oldCharge = core.getItemDamage();
+        int newCharge = Math.min(core.getMaxDamage(), oldCharge + WaystonesWorldInteraction.instance.getConfig().chargesPerEnderPearl);
+        return new ItemStack(WaystonesWorldInteraction.itemWarpStoneCore, 1, newCharge);
     }
 }
