@@ -14,6 +14,7 @@ import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.stats.StatList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
@@ -76,15 +77,17 @@ public class ItemBoundScroll extends Item {
     @Override
     public ItemStack onItemUseFinish(ItemStack itemStack, World world, EntityLivingBase entity) {
         if (!world.isRemote && entity instanceof EntityPlayer) {
+            EntityPlayer player = (EntityPlayer) entity;
             WaystoneEntry lastEntry = tagToEntry(getBoundToTag(itemStack));
             if (lastEntry != null) {
                 if (itemStack.getMetadata() > 0 && !WaystoneManager.checkAndUpdateWaystone((EntityPlayer) entity, lastEntry)) {
-                    WaystoneManager.addPlayerWaystone((EntityPlayer) entity, lastEntry);
+                    WaystoneManager.addPlayerWaystone(player, lastEntry);
                 }
-                if (WaystoneManager.teleportToWaystone((EntityPlayer) entity, lastEntry)) {
+                if (WaystoneManager.teleportToWaystone(player, lastEntry)) {
                     if (!((EntityPlayer) entity).capabilities.isCreativeMode) {
                         itemStack.shrink(1);
                     }
+                    player.addStat(StatList.getObjectUseStats(this));
                 }
             }
         }

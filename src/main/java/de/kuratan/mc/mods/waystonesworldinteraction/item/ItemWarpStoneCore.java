@@ -27,35 +27,35 @@ public class ItemWarpStoneCore extends Item {
         setHasSubtypes(true);
     }
 
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn)
+    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand)
     {
-        ItemStack itemstack = playerIn.getHeldItem(handIn);
+        ItemStack itemstack = player.getHeldItem(hand);
 
         if (itemstack.getItemDamage() == 0) {
             return new ActionResult(EnumActionResult.FAIL, itemstack);
         }
 
-        if (!playerIn.capabilities.isCreativeMode)
+        if (!player.capabilities.isCreativeMode)
         {
-            itemstack.damageItem(-1, playerIn);
+            itemstack.damageItem(-1, player);
         }
 
-        worldIn.playSound(null, playerIn.posX, playerIn.posY, playerIn.posZ, SoundEvents.ENTITY_ENDERPEARL_THROW, SoundCategory.NEUTRAL, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
-        playerIn.getCooldownTracker().setCooldown(this, 20);
+        world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ENDERPEARL_THROW, SoundCategory.NEUTRAL, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
+        player.getCooldownTracker().setCooldown(this, 20);
 
-        if (!worldIn.isRemote)
+        if (!world.isRemote)
         {
-            EntityEnderPearl entityenderpearl = new EntityEnderPearl(worldIn, playerIn);
-            entityenderpearl.setHeadingFromThrower(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 0.0F, 1.5F, 1.0F);
-            worldIn.spawnEntity(entityenderpearl);
+            EntityEnderPearl entityenderpearl = new EntityEnderPearl(world, player);
+            entityenderpearl.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw, 0.0F, 1.5F, 1.0F);
+            world.spawnEntity(entityenderpearl);
         }
 
-        playerIn.addStat(StatList.getObjectUseStats(this));
+        player.addStat(StatList.getObjectUseStats(this));
         return new ActionResult(EnumActionResult.SUCCESS, itemstack);
     }
 
     @Override
-    public void getSubItems(Item itemIn, CreativeTabs tab, NonNullList<ItemStack> subItems) {
+    public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> subItems) {
         subItems.add(new ItemStack(this, 1, 0));
         subItems.add(new ItemStack(this, 1, 16));
     }
@@ -68,7 +68,7 @@ public class ItemWarpStoneCore extends Item {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
+    public void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltip, boolean advanced) {
         switch (stack.getItemDamage()) {
             case 0:
                 tooltip.add(TextFormatting.GRAY + I18n.format("tooltip."+WaystonesWorldInteraction.MOD_ID+":inert"));
@@ -78,7 +78,6 @@ public class ItemWarpStoneCore extends Item {
                 break;
             default:
                 tooltip.add(TextFormatting.AQUA + I18n.format("tooltip."+WaystonesWorldInteraction.MOD_ID+":charge") + ": " + stack.getMetadata());
-
         }
     }
 

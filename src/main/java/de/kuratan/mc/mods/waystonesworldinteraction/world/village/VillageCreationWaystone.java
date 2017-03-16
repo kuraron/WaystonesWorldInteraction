@@ -52,11 +52,10 @@ public class VillageCreationWaystone implements VillagerRegistry.IVillageCreatio
     @Override
     public StructureVillagePieces.Village buildComponent(StructureVillagePieces.PieceWeight villagePiece, StructureVillagePieces.Start startPiece, List<StructureComponent> pieces, Random random, int p1, int p2, int p3, EnumFacing facing, int p5) {
         Class<? extends VillageWaystone> clazz = getVillageWaystoneClass(random);
-        /*if (clazz.equals(VillageWaystoneOrnate.class))
+        if (clazz.equals(VillageWaystoneOrnate.class))
             return VillageWaystoneOrnate.buildComponent(villagePiece, startPiece, pieces, random, p1, p2, p3, facing, p5);
         if (clazz.equals(VillageWaystoneEnclosed.class))
             return VillageWaystoneEnclosed.buildComponent(villagePiece, startPiece, pieces, random, p1, p2, p3, facing, p5);
-        return VillageWaystoneSimple.buildComponent(villagePiece, startPiece, pieces, random, p1, p2, p3, facing, p5);*/
-        return VillageWaystoneEnclosed.buildComponent(villagePiece, startPiece, pieces, random, p1, p2, p3, facing, p5);
+        return VillageWaystoneSimple.buildComponent(villagePiece, startPiece, pieces, random, p1, p2, p3, facing, p5);
     }
 }
