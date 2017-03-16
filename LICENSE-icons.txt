@@ -1,4 +1,4 @@
-This project includes item icons "warp_stone_core" which are based on a work released by Joe Williamson (@JoeCreates on Twitter) under CC-BY-SA 3.0.
+This project includes item icons "warp_stone_core" and "bound_scroll" which are based on a work released by Joe Williamson (@JoeCreates on Twitter) under CC-BY-SA 3.0.
 
 http://opengameart.org/content/roguelikerpg-items
 
