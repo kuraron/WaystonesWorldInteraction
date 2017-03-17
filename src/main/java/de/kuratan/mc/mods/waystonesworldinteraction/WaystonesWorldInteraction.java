@@ -1,13 +1,15 @@
 package de.kuratan.mc.mods.waystonesworldinteraction;
 
 import de.kuratan.mc.mods.waystonesworldinteraction.block.BlockWarpStoneShardOre;
-import de.kuratan.mc.mods.waystonesworldinteraction.item.*;
+import de.kuratan.mc.mods.waystonesworldinteraction.item.ChargeCoreRecipe;
+import de.kuratan.mc.mods.waystonesworldinteraction.item.ItemBoundScroll;
+import de.kuratan.mc.mods.waystonesworldinteraction.item.ItemWarpStoneCore;
+import de.kuratan.mc.mods.waystonesworldinteraction.item.ItemWarpStoneShard;
 import de.kuratan.mc.mods.waystonesworldinteraction.network.NetworkHandler;
 import de.kuratan.mc.mods.waystonesworldinteraction.util.WaystonesIntegration;
 import de.kuratan.mc.mods.waystonesworldinteraction.world.WorldGenerator;
 import de.kuratan.mc.mods.waystonesworldinteraction.world.stronghold.StrongholdGenerator;
 import de.kuratan.mc.mods.waystonesworldinteraction.world.village.VillageCreationWaystone;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -30,7 +32,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Mod(
         modid = WaystonesWorldInteraction.MOD_ID,
@@ -45,7 +50,7 @@ public class WaystonesWorldInteraction {
     @Mod.Instance
     public static WaystonesWorldInteraction instance;
 
-    @SidedProxy(serverSide = "de.kuratan.mc.mods.waystonesworldinteraction", clientSide = "de.kuratan.mc.mods.waystonesworldinteraction.client.ClientProxy")
+    @SidedProxy(serverSide = "de.kuratan.mc.mods.waystonesworldinteraction.CommonProxy", clientSide = "de.kuratan.mc.mods.waystonesworldinteraction.client.ClientProxy")
     public static CommonProxy proxy;
 
     @GameRegistry.ObjectHolder(WaystonesIntegration.WAYSTONES_MOD_ID+":return_scroll")
@@ -131,16 +136,6 @@ public class WaystonesWorldInteraction {
 
     @EventHandler
     public void postInit(FMLPostInitializationEvent event) {
-        CreativeTabs waystonesTab = Arrays.stream(CreativeTabs.CREATIVE_TAB_ARRAY).filter(tab -> tab.getTabLabel().equals(WaystonesIntegration.WAYSTONES_MOD_ID)).findFirst().orElse(null);
-        if (waystonesTab != null) {
-            itemBoundScroll.setCreativeTab(waystonesTab);
-            itemWarpStoneCore.setCreativeTab(waystonesTab);
-            itemWarpStoneShard.setCreativeTab(waystonesTab);
-            blockWarpStoneShardOre.setCreativeTab(waystonesTab);
-        } else {
-            logger.warn("Could not find Waystones creative tab.");
-        }
-
         if (config.removeOriginalWarpstoneRecepie) {
             CraftingManager.getInstance().getRecipeList().removeIf(stack -> stack.getRecipeOutput().getItem() == itemWarpStone);
         }
@@ -152,6 +147,8 @@ public class WaystonesWorldInteraction {
         list.add(new ItemStack(itemWarpStoneCore));
         RecipeSorter.register("ChargeCoreRecipe", ChargeCoreRecipe.class, RecipeSorter.Category.SHAPELESS, "");
         GameRegistry.addRecipe(new ChargeCoreRecipe(new ItemStack(itemWarpStoneCore), list));
+
+        proxy.postInit(event);
     }
 
     public WaystonesWorldInteractionConfig getConfig() {

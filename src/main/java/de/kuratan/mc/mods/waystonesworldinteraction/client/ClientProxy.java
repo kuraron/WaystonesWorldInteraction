@@ -6,12 +6,16 @@ import de.kuratan.mc.mods.waystonesworldinteraction.util.WaystonesIntegration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+
+import java.util.Arrays;
 
 public class ClientProxy extends CommonProxy {
 
@@ -23,6 +27,19 @@ public class ClientProxy extends CommonProxy {
         ModelLoader.setCustomModelResourceLocation(WaystonesWorldInteraction.itemWarpStoneCore, 0, new ModelResourceLocation(WaystonesWorldInteraction.itemWarpStoneCore.getRegistryName(), "inventory"));
         ModelLoader.setCustomModelResourceLocation(WaystonesWorldInteraction.itemWarpStoneShard, 0, new ModelResourceLocation(WaystonesWorldInteraction.itemWarpStoneShard.getRegistryName(), "inventory"));
         ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(WaystonesWorldInteraction.blockWarpStoneShardOre), 0, new ModelResourceLocation(WaystonesWorldInteraction.blockWarpStoneShardOre.getRegistryName(), "inventory"));
+    }
+
+    @Override
+    public void postInit(FMLPostInitializationEvent event) {
+        CreativeTabs waystonesTab = Arrays.stream(CreativeTabs.CREATIVE_TAB_ARRAY).filter(tab -> tab.getTabLabel().equals(WaystonesIntegration.WAYSTONES_MOD_ID)).findFirst().orElse(null);
+        if (waystonesTab != null) {
+            WaystonesWorldInteraction.itemBoundScroll.setCreativeTab(waystonesTab);
+            WaystonesWorldInteraction.itemWarpStoneCore.setCreativeTab(waystonesTab);
+            WaystonesWorldInteraction.itemWarpStoneShard.setCreativeTab(waystonesTab);
+            WaystonesWorldInteraction.blockWarpStoneShardOre.setCreativeTab(waystonesTab);
+        } else {
+            WaystonesWorldInteraction.logger.warn("Could not find Waystones creative tab.");
+        }
     }
 
     @Override

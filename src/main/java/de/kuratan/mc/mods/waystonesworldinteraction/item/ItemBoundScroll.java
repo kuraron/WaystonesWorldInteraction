@@ -192,14 +192,14 @@ public class ItemBoundScroll extends Item {
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack itemStack, EntityPlayer player, List<String> list, boolean debug) {
         NBTTagCompound lastEntry = getBoundToTag(itemStack);
-        if (itemStack.getMetadata() == 0) {
-            if (lastEntry != null) {
-                list.add(TextFormatting.GRAY + I18n.format("tooltip." + WAYSTONES_MOD_ID + ":boundTo", TextFormatting.DARK_AQUA + lastEntry.getString("name")));
-            } else {
-                list.add(TextFormatting.GRAY + I18n.format("tooltip." + WAYSTONES_MOD_ID + ":boundTo", I18n.format("tooltip." + WAYSTONES_MOD_ID + ":none")));
-            }
+        if (lastEntry != null) {
+            list.add(TextFormatting.GRAY + I18n.format("tooltip." + WAYSTONES_MOD_ID + ":boundTo", TextFormatting.DARK_AQUA + lastEntry.getString("name")));
         } else {
-            list.add(TextFormatting.GRAY + I18n.format("tooltip." + WAYSTONES_MOD_ID + ":boundTo", TextFormatting.OBFUSCATED + "Unknown"));
+            if (itemStack.getMetadata() == 0) {
+                list.add(TextFormatting.GRAY + I18n.format("tooltip." + WAYSTONES_MOD_ID + ":boundTo", I18n.format("tooltip." + WAYSTONES_MOD_ID + ":none")));
+            } else {
+                list.add(TextFormatting.GRAY + I18n.format("tooltip." + WAYSTONES_MOD_ID + ":boundTo", TextFormatting.OBFUSCATED + "Unknown"));
+            }
         }
     }
 }
