@@ -125,7 +125,7 @@ public class StrongholdGenerator extends MapGenStronghold {
                 return false;
             }
 
-            this.fillWithRandomizedBlocks(worldIn, structureBoundingBoxIn, 0, 0, 0, structureBoundingBoxIn.getXSize(), y + 3, structureBoundingBoxIn.getZSize(), true, randomIn, new Stones());
+            this.fillWithRandomizedBlocks(worldIn, structureBoundingBoxIn, 0, 0, 0, structureBoundingBoxIn.getXSize(), y + 3, structureBoundingBoxIn.getZSize(), false, randomIn, new Stones());
             this.fillWithAir(worldIn, structureBoundingBoxIn, 1, 1, 1, structureBoundingBoxIn.getXSize() - 1, y + 2, structureBoundingBoxIn.getZSize() - 1);
             this.fillWithAir(worldIn, structureBoundingBoxIn, 0, 1, z - 1, 0, 3, z + 1);
             this.fillWithAir(worldIn, structureBoundingBoxIn, structureBoundingBoxIn.getXSize(), 1, z - 1, structureBoundingBoxIn.getXSize(), 3, z + 1);
