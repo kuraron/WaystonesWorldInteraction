@@ -1,6 +1,7 @@
 package de.kuratan.mc.mods.waystonesworldinteraction;
 
 import de.kuratan.mc.mods.waystonesworldinteraction.block.BlockWarpStoneShardOre;
+import de.kuratan.mc.mods.waystonesworldinteraction.config.WaystonesWorldInteractionConfig;
 import de.kuratan.mc.mods.waystonesworldinteraction.item.ChargeCoreRecipe;
 import de.kuratan.mc.mods.waystonesworldinteraction.item.ItemBoundScroll;
 import de.kuratan.mc.mods.waystonesworldinteraction.item.ItemWarpStoneCore;
@@ -8,6 +9,7 @@ import de.kuratan.mc.mods.waystonesworldinteraction.item.ItemWarpStoneShard;
 import de.kuratan.mc.mods.waystonesworldinteraction.network.NetworkHandler;
 import de.kuratan.mc.mods.waystonesworldinteraction.util.WaystonesIntegration;
 import de.kuratan.mc.mods.waystonesworldinteraction.world.WorldGenerator;
+import de.kuratan.mc.mods.waystonesworldinteraction.world.scattered.ScatteredWaystonesGen;
 import de.kuratan.mc.mods.waystonesworldinteraction.world.stronghold.StrongholdGenerator;
 import de.kuratan.mc.mods.waystonesworldinteraction.world.village.VillageCreationWaystone;
 import net.minecraft.entity.passive.EntityVillager;
@@ -109,10 +111,12 @@ public class WaystonesWorldInteraction {
     @EventHandler
     public void init(FMLInitializationEvent event) {
         if (config.deactivateOriginalWorldGen) {
+            logger.info("Deactivate Waystones WorldGen");
             deactivateOriginalWorldGen();
         }
 
         if (config.createVillageWaystones) {
+            logger.info("Registering Village Waystones");
             VillagerRegistry.instance().registerVillageCreationHandler(new VillageCreationWaystone());
         }
         if (config.spawnWaystonesVillagers) {
@@ -130,7 +134,12 @@ public class WaystonesWorldInteraction {
             );
         }
         if (config.createStrongholdWaystones) {
+            logger.info("Registering Stronghold Waystones");
             MinecraftForge.TERRAIN_GEN_BUS.register(new StrongholdGenerator());
+        }
+        if (config.enableWaystoneScatteredFeatures) {
+            logger.info("Registering Scattered Waystones");
+            MinecraftForge.TERRAIN_GEN_BUS.register(new ScatteredWaystonesGen());
         }
     }
 
@@ -160,7 +169,6 @@ public class WaystonesWorldInteraction {
     }
 
     protected void deactivateOriginalWorldGen() {
-        logger.info("Deactivate Waystones WorldGen");
         try {
             Field fieldWorldGenerators = GameRegistry.class.getDeclaredField("worldGenerators");
             fieldWorldGenerators.setAccessible(true);

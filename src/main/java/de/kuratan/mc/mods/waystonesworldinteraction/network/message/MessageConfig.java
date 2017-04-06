@@ -1,6 +1,6 @@
 package de.kuratan.mc.mods.waystonesworldinteraction.network.message;
 
-import de.kuratan.mc.mods.waystonesworldinteraction.WaystonesWorldInteractionConfig;
+import de.kuratan.mc.mods.waystonesworldinteraction.config.WaystonesWorldInteractionConfig;
 import io.netty.buffer.ByteBuf;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 

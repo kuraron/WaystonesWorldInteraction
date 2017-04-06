@@ -1,4 +1,4 @@
-package de.kuratan.mc.mods.waystonesworldinteraction;
+package de.kuratan.mc.mods.waystonesworldinteraction.config;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraftforge.common.config.Configuration;
@@ -9,6 +9,8 @@ public class WaystonesWorldInteractionConfig {
     public boolean createStrongholdWaystones;
     public boolean spawnWaystonesVillagers;
     public boolean enableWaystoneShardWorldGen;
+    public boolean enableWaystoneScatteredFeatures;
+    public int maxDistanceBetweenScatteredFeatures;
 
     public boolean removeOriginalWarpstoneRecepie;
     public boolean allowBoundScrollRebind;
@@ -16,11 +18,13 @@ public class WaystonesWorldInteractionConfig {
 
     public void reloadLocal(Configuration config) {
         deactivateOriginalWorldGen = config.getBoolean("Deactivate Original WorldGen", "worldgen", true, "Shall the original WorldGen be deactivated.");
-        createVillageWaystones = config.getBoolean("Spawn Waystones in Villages", "worldgen", true, "Shall Waystones appear in villages");
+        createVillageWaystones = config.getBoolean("Spawn Waystones in Villages", "worldgen", false, "Shall Waystones appear in villages");
         createStrongholdWaystones = config.getBoolean("Spawn Waystones in Strongholds", "worldgen", false, "Shall Waystones appear in strongholds");
         spawnWaystonesVillagers = config.getBoolean("Spawn Waystones Villager", "worldgen", true, "Shall specialized Villagers spawn");
 
         enableWaystoneShardWorldGen = config.getBoolean("Generate Waystone Shard Ore", "worldgen", false, "Spawn Waystone Shards like Emerald ore");
+        enableWaystoneScatteredFeatures = config.getBoolean("Generate Scattered Waystones", "worldgen", true, "Spawn scattered Waystones in the World");
+        maxDistanceBetweenScatteredFeatures = config.getInt("Max Dist Scattered", "worldgen", 32, 8, 64, "Maximal Distance between scattered Features");
 
         removeOriginalWarpstoneRecepie = config.getBoolean("Deactivate original warp stone recepie", "general", true, "Removes the original recepie for the warp stone");
         allowBoundScrollRebind = config.getBoolean("Rebind Bound Scroll", "general", false, "Allow players to rebind bound scrolls by sneak-rightclick");
@@ -37,6 +41,8 @@ public class WaystonesWorldInteractionConfig {
         config.removeOriginalWarpstoneRecepie = buf.readBoolean();
         config.allowBoundScrollRebind = buf.readBoolean();
         config.chargesPerEnderPearl = buf.readInt();
+        config.enableWaystoneScatteredFeatures = buf.readBoolean();
+        config.maxDistanceBetweenScatteredFeatures = buf.readInt();
         return config;
     }
 
@@ -49,5 +55,7 @@ public class WaystonesWorldInteractionConfig {
         buf.writeBoolean(removeOriginalWarpstoneRecepie);
         buf.writeBoolean(allowBoundScrollRebind);
         buf.writeInt(chargesPerEnderPearl);
+        buf.writeBoolean(enableWaystoneScatteredFeatures);
+        buf.writeInt(maxDistanceBetweenScatteredFeatures);
     }
 }

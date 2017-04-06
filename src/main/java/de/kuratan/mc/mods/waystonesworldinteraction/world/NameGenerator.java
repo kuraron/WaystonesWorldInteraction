@@ -8,7 +8,8 @@ public class NameGenerator {
     public enum WaystoneLocation {
         NONE(null),
         VILLAGE("Village"),
-        STRONGHOLD("Stronghold");
+        STRONGHOLD("Stronghold"),
+        SCATTERED("");
 
         public final String suffix;
 
@@ -23,7 +24,7 @@ public class NameGenerator {
 
     public static String getName(Biome biome, Random random, WaystoneLocation waystoneLocation) {
         String name = net.blay09.mods.waystones.worldgen.NameGenerator.getName(biome, random);
-        if (waystoneLocation.suffix != null) {
+        if (waystoneLocation.suffix != null && waystoneLocation.suffix.length() > 0) {
             return name + " " + waystoneLocation.suffix;
         }
         return name;
