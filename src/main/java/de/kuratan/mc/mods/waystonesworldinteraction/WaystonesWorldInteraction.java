@@ -139,7 +139,9 @@ public class WaystonesWorldInteraction {
         }
         if (config.enableWaystoneScatteredFeatures) {
             logger.info("Registering Scattered Waystones");
-            MinecraftForge.TERRAIN_GEN_BUS.register(new ScatteredWaystonesGen());
+            ScatteredWaystonesGen gen = new ScatteredWaystonesGen();
+            MinecraftForge.EVENT_BUS.register(gen);
+            MinecraftForge.TERRAIN_GEN_BUS.register(gen);
         }
     }
 

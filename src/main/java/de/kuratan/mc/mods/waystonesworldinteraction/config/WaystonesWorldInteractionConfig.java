@@ -24,7 +24,7 @@ public class WaystonesWorldInteractionConfig {
 
         enableWaystoneShardWorldGen = config.getBoolean("Generate Waystone Shard Ore", "worldgen", false, "Spawn Waystone Shards like Emerald ore");
         enableWaystoneScatteredFeatures = config.getBoolean("Generate Scattered Waystones", "worldgen", true, "Spawn scattered Waystones in the World");
-        maxDistanceBetweenScatteredFeatures = config.getInt("Max Dist Scattered", "worldgen", 32, 8, 64, "Maximal Distance between scattered Features");
+        maxDistanceBetweenScatteredFeatures = config.getInt("Max Dist Scattered", "worldgen", 32, 8, 128, "Maximal Distance between scattered Features");
 
         removeOriginalWarpstoneRecepie = config.getBoolean("Deactivate original warp stone recepie", "general", true, "Removes the original recepie for the warp stone");
         allowBoundScrollRebind = config.getBoolean("Rebind Bound Scroll", "general", false, "Allow players to rebind bound scrolls by sneak-rightclick");

@@ -8,7 +8,6 @@ import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Rotation;
 import net.minecraft.util.datafix.DataFixesManager;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -25,24 +24,26 @@ import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.Random;
 
-import static de.kuratan.mc.mods.waystonesworldinteraction.WaystonesWorldInteraction.logger;
-
 public class ScatteredWaystonesGen extends MapGenStructure {
     private static TemplateManager PIECES;
     private static Map<String, Integer> PIECE_WEIGHTS;
+    private static Map<String, Integer> PIECE_OFFSET;
 
     static {
         PIECES = new TemplateManager("", DataFixesManager.createFixer());
         PIECE_WEIGHTS = Maps.newHashMap();
+        PIECE_OFFSET = Maps.newHashMap();
+        MapGenStructureIO.registerStructure(Start.class, WaystonesWorldInteraction.MOD_ID+":ScatteredTemplate");
         MapGenStructureIO.registerStructureComponent(Feature.class, WaystonesWorldInteraction.MOD_ID+":ScatteredTemplate");
-        registerPiece(WaystonesWorldInteraction.MOD_ID + ":scattered/waystone_pillars", 3);
+        registerPiece(WaystonesWorldInteraction.MOD_ID + ":scattered/waystone_pillars", 3, -3);
     }
 
-    public static boolean registerPiece(String name, int weight) {
+    public static boolean registerPiece(String name, int weight, int yOffset) {
         if (PIECE_WEIGHTS.containsKey(name)) {
             return false;
         }
         PIECE_WEIGHTS.put(name, weight);
+        PIECE_OFFSET.put(name, yOffset);
         return true;
     }
 
@@ -60,34 +61,30 @@ public class ScatteredWaystonesGen extends MapGenStructure {
     }
 
     @SubscribeEvent
-    public void onChunkPopulate(PopulateChunkEvent.Pre event) {
+    public void onChunkPopulatePre(PopulateChunkEvent.Pre event) {
         this.generateStructure(event.getWorld(), event.getRand(), new ChunkPos(event.getChunkX(), event.getChunkZ()));
     }
 
     @SubscribeEvent
-    public void onChunkPopulate(PopulateChunkEvent.Post event) {
+    public void onChunkPopulatePost(PopulateChunkEvent.Post event) {
         this.generate(event.getWorld(), event.getChunkX(), event.getChunkZ(), null);
     }
     
     @Override
     public String getStructureName() {
-        logger.warn("getStructureName");
         return "Waystone";
     }
 
     @Nullable
     @Override
     public BlockPos getClosestStrongholdPos(World worldIn, BlockPos pos, boolean p_180706_3_) {
-        logger.warn("getClosestStrongholdPos");
         this.world = worldIn;
         return findNearestStructurePosBySpacing(worldIn, this, pos, WaystonesWorldInteraction.instance.getConfig().maxDistanceBetweenScatteredFeatures, 8, 14357617, false, 100, p_180706_3_);
     }
 
     @Override
     protected boolean canSpawnStructureAtCoords(int chunkX, int chunkZ) {
-        logger.warn("canSpawnStructureAtCoords");
-        return true;
-        /*int i = chunkX;
+        int i = chunkX;
         int j = chunkZ;
 
         if (chunkX < 0)
@@ -105,27 +102,24 @@ public class ScatteredWaystonesGen extends MapGenStructure {
         Random random = this.world.setRandomSeed(k, l, 14357617);
         k = k * WaystonesWorldInteraction.instance.getConfig().maxDistanceBetweenScatteredFeatures;
         l = l * WaystonesWorldInteraction.instance.getConfig().maxDistanceBetweenScatteredFeatures;
-        k = k + random.nextInt(WaystonesWorldInteraction.instance.getConfig().maxDistanceBetweenScatteredFeatures - 8);
-        l = l + random.nextInt(WaystonesWorldInteraction.instance.getConfig().maxDistanceBetweenScatteredFeatures - 8);
+        k = k + random.nextInt(WaystonesWorldInteraction.instance.getConfig().maxDistanceBetweenScatteredFeatures/2);
+        l = l + random.nextInt(WaystonesWorldInteraction.instance.getConfig().maxDistanceBetweenScatteredFeatures/2);
 
         if (i == k && j == l)
         {
             Biome biome = this.world.getBiomeProvider().getBiome(new BlockPos(i * 16 + 8, 0, j * 16 + 8));
-
             if (biome == null)
             {
                 return false;
             }
-            logger.warn("Allow at {}", new BlockPos(i * 16 + 8, 0, j * 16 + 8));
             return true;
         }
 
-        return false;*/
+        return false;
     }
 
     @Override
     protected StructureStart getStructureStart(int chunkX, int chunkZ) {
-        logger.warn("getStructureStart");
         return new ScatteredWaystonesGen.Start(this.world, this.rand, chunkX, chunkZ);
     }
 
@@ -150,12 +144,10 @@ public class ScatteredWaystonesGen extends MapGenStructure {
     public static class ScatteredTemplate extends WaystoneTemplate {
 
         private String name;
-        private TemplateManager templateManager;
 
         public ScatteredTemplate(TemplateManager templateManager, String name, BlockPos position) {
             this.name = name;
             this.templatePosition = position;
-            this.templateManager = templateManager;
             this.loadTemplate(templateManager);
         }
 
@@ -185,6 +177,14 @@ public class ScatteredWaystonesGen extends MapGenStructure {
         @Override
         protected NameGenerator.WaystoneLocation getWaystoneLocation() {
             return NameGenerator.WaystoneLocation.SCATTERED;
+        }
+
+        protected BlockPos getTemplatePostion() {
+            return this.templatePosition;
+        }
+
+        protected void setTemplatePostion(BlockPos pos) {
+            this.templatePosition = pos;
         }
     }
 
@@ -246,17 +246,14 @@ public class ScatteredWaystonesGen extends MapGenStructure {
 
         @Override
         public boolean addComponentParts(World world, Random random, StructureBoundingBox structureBoundingBox) {
-            if (!this.offsetToAverageGroundLevel(world, structureBoundingBox, 0))
+            if (!this.offsetToAverageGroundLevel(world, structureBoundingBox, PIECE_OFFSET.get(scatteredTemplate.name)))
             {
                 return false;
             }
-            logger.warn("Scattered: {}", structureBoundingBox);
-            StructureBoundingBox structureboundingbox = this.getBoundingBox();
-            BlockPos blockpos = new BlockPos(structureboundingbox.minX, structureboundingbox.minY, structureboundingbox.minZ);
-            Rotation[] arotation = Rotation.values();
-            PlacementSettings placementsettings = (new PlacementSettings()).setRotation(arotation[random.nextInt(arotation.length)]).setReplacedBlock(Blocks.STRUCTURE_VOID).setBoundingBox(structureboundingbox);
+            scatteredTemplate.setTemplatePostion(scatteredTemplate.getTemplatePostion().down(64).up(this.getBoundingBox().minY));
+            PlacementSettings placementsettings = (new PlacementSettings()).setReplacedBlock(Blocks.STRUCTURE_VOID);
             scatteredTemplate.setPlacementSettings(placementsettings);
-            return scatteredTemplate.addComponentParts(world, random, structureBoundingBox);
+            return scatteredTemplate.addComponentParts(world, random, this.getBoundingBox());
         }
 
         /**
@@ -287,7 +284,6 @@ public class ScatteredWaystonesGen extends MapGenStructure {
                         }
                     }
                 }
-
                 if (j == 0)
                 {
                     return false;
